@@ -1,0 +1,130 @@
+width: 350px;
+$height: 70px;
+$primary_color: rgba(255,255,255,0);
+$border_color--hover: #fff;
+$stroke: 1px;
+$border: rgba(255,255,255,0);
+$transition_duration: 100ms;
+$pipeline_width: $width+$stroke;
+$pipeline_height: $height+$stroke;
+$pipes: 4;
+@function border-pipeline($transition_duration, $pipe) {
+    @return $transition_duration*$pipe;
+}
+@mixin border-animation($dimension, $easing ,$pipe ) {
+    transition: $transition_duration  $dimension $easing border-pipeline($transition_duration,$pipe);
+    -web-kit-transition: $transition_duration  $dimension $easing border-pipeline($transition_duration,$pipe);
+}
+.overlay {
+    background: #000000;
+    bottom: 0;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: all 500ms ease 0s;
+    width: 100%;
+    z-index: 0;
+}
+
+.box {
+    overflow: hidden;
+    text-align: center;
+    width: 500px;
+    margin: 0 auto;
+  a {
+      background: #83d1f7;
+      display: block;
+      margin: 25px;
+      min-height: 250px;
+      position: relative;
+  }
+}
+
+.content {
+    font-weight: 300;
+    width: $width;
+    height: $height;
+    line-height: $height;
+    background: $primary_color;
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: auto;
+    border: $border;
+    text-align: center;
+    color: #fff; 
+    cursor: pointer;
+    transition: ($transition_duration*$pipes)+$transition_duration ease;
+    &:before { // top border
+        position: absolute; 
+        width: 0; 
+        height:$stroke; 
+        content: ''; 
+        background: #fff;
+        top:-$stroke; 
+        left: 0;
+        right: 0;
+        margin: auto; 
+        @include border-animation(width, ease, 3);
+    }
+    &:after { // right
+        position: absolute; 
+        width:$stroke; 
+        height:0;
+        content: ''; 
+        background: #fff; 
+        bottom:-$stroke; 
+        right: -$stroke; 
+        @include border-animation(height, ease, 1);
+    }
+    .inner:after { // bottom
+        position: absolute; 
+        width: 145px; 
+        height:$stroke; 
+        content: ''; 
+        background: #fff; 
+        bottom:-$stroke; 
+        left: 0;
+        right: 0;
+        margin: auto;
+        @include border-animation(width, ease, 0);
+    }
+    .inner:before { // left
+        position: absolute; 
+        width: $stroke; 
+        height:0;content: ''; 
+        background: #fff; 
+        bottom:-$stroke; 
+        left: -$stroke; 
+        @include border-animation(height, ease, 1); 
+    }
+}
+.box:hover .content {
+    border-color:transparent;
+    background:darken($primary_color,30);
+    &:before {
+        width: $pipeline_width; 
+        @include border-animation( width, ease, 3); 
+    }
+    &:after {
+        height:$pipeline_height; 
+        @include border-animation( height, ease, 1); 
+    }
+    .inner:after {
+        width: $pipeline_width; 
+        @include border-animation( width, ease, 0);
+    }
+    .inner:before {
+        height:$pipeline_height; 
+        @include border-animation( height, ease, 1);
+    }
+}
+
+.box:hover {
+  .overlay {
+    opacity: 0.2;
+  }
+}
